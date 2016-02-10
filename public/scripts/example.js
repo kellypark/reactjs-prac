@@ -1,23 +1,25 @@
 var Post = React.createClass({
-  removePost: function(e){
-  
-  },
   render: function() {
     return (
       <div className="post">
         <h2 className="title">{this.props.title}</h2>
         <div className="note">{this.props.note}</div>
-        <button type="button" onClick={this.removePost(this)}>Delete</button>
       </div>
     );
   }
 });
 
 var PostList = React.createClass({
+  removePost: function(post){
+    this.props.onPostDelete(post);
+  },
   render: function() {
-    var posts = this.props.data.map(function(post) {
+    var posts = this.props.data.map((post) => {
       return (
-        <Post key={post.id} title={post.title} note={post.note}/> 
+        <div className="postList" key= {post.id}> 
+          <Post key={post.id} title={post.title} note={post.note}/> 
+          <button type="button" onClick={this.removePost.bind(this, post)}>Delete</button>
+        </div>
       );
     });
     return (
@@ -71,10 +73,16 @@ var PostApp = React.createClass({
     posts.push({id: newId, title: title, note: note});
     this.setState({data: posts});
   },
+  handlePostDelete: function(post){
+    var posts = this.state.data;
+    var index = posts.indexOf(post);
+    posts.splice(index, 1);
+    this.setState({data: posts});
+  },
   render: function() {
     return (
       <div className="postApp">
-      <PostList data={this.state.data} />
+      <PostList data={this.state.data} onPostDelete={this.handlePostDelete}/>
       <PostForm onPostSubmit={this.handlePostSubmit}/>
       </div>
     );
