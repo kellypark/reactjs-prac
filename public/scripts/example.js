@@ -1,7 +1,6 @@
 var Post = React.createClass({
   removePost: function(e){
-    debugger;
-    this.props.onRemovePost(e.target);
+  
   },
   render: function() {
     return (
