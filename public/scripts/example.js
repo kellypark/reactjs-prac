@@ -24,13 +24,13 @@ var PostList = React.createClass({
   render: function() {
     var posts = this.props.data.map((post) => {
       return (
-        <div className="post-list" key= {post.id}> 
+        <div className="post-wrapper" key= {post.id}> 
           <Post key={post.id} title={post.title} note={post.note} refKey={post.id} removePost={this.removePost}/> 
         </div>
       );
     });
     return (
-      <div className="postList">
+      <div className="post-list">
         {posts}
       </div>
     );
@@ -104,7 +104,7 @@ var PostApp = React.createClass({
   },
   render: function() {
     return (
-      <div className="postApp">
+      <div className="post-app">
       <PostForm onPostSubmit={this.handlePostSubmit}/>
       <PostList data={this.state.data} onPostDelete={this.handlePostDelete}/>
       </div>
