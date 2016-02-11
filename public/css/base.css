@@ -60,3 +60,10 @@ p, ul {
 ul {
   padding-left: 30px;
 }
+
+.post-form {
+  padding: 20px;
+  margin: 20px 0; 
+  border: 1px solid lightGrey ;
+  border-radius: 5px;
+}

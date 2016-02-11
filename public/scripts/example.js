@@ -1,24 +1,31 @@
 var Post = React.createClass({
+  removeWithKey: function(){
+    this.props.removePost(this.props.refKey);
+  },
   render: function() {
     return (
-      <div className="post">
-        <h2 className="title">{this.props.title}</h2>
-        <div className="note">{this.props.note}</div>
+      <div className="panel panel-default">
+          <div className="panel-heading">
+            {this.props.title}
+            <button className="btn btn-danger pull-right" type="button" onClick={this.removeWithKey}>Delete</button>
+          </div>
+          <div className="panel-body">
+            {this.props.note}
+          </div>
       </div>
     );
   }
 });
 
 var PostList = React.createClass({
-  removePost: function(post){
-    this.props.onPostDelete(post);
+  removePost: function(key){
+    this.props.onPostDelete(key);
   },
   render: function() {
     var posts = this.props.data.map((post) => {
       return (
-        <div className="postList" key= {post.id}> 
-          <Post key={post.id} title={post.title} note={post.note}/> 
-          <button type="button" onClick={this.removePost.bind(this, post)}>Delete</button>
+        <div className="post-list" key= {post.id}> 
+          <Post key={post.id} title={post.title} note={post.note} refKey={post.id} removePost={this.removePost}/> 
         </div>
       );
     });
@@ -46,19 +53,31 @@ var PostForm = React.createClass({
   },
   render: function() {
     return (
-      <form className="postForm" onSubmit={this.handleSubmit}>
-        <input
-          type="text"
-          value={this.state.title}
-          onChange={this.handleTitleChange}
-        />
-        <input
-          type="text"
-          value={this.state.note}
-          onChange={this.handleNoteChange}
-        />
-      <input type="submit" value="Post"/>
+      <div className='post-form'>
+      <h2>Add a post here</h2>
+      <form className="form" onSubmit={this.handleSubmit}>
+        <div className="form-group">
+          <label>Title</label>
+          <input
+            className="form-control"
+            type="text"
+            value={this.state.title}
+            onChange={this.handleTitleChange}
+          />
+        </div>
+        <div className="form-group">
+          <label>Note</label>
+          <textarea
+            className="form-control"
+            rows="3"
+            value={this.state.note}
+            onChange={this.handleNoteChange}
+          >
+          </textarea>
+        </div>
+      <input className="btn btn-success" type="submit" value="Post"/>
       </form>
+      </div>
     );
   }
 });
@@ -73,17 +92,20 @@ var PostApp = React.createClass({
     posts.push({id: newId, title: title, note: note});
     this.setState({data: posts});
   },
-  handlePostDelete: function(post){
+  handlePostDelete: function(key){
     var posts = this.state.data;
-    var index = posts.indexOf(post);
+    var foundPost = posts.find(post => {
+      return post.id === key;
+    });
+    var index = posts.indexOf(foundPost);
     posts.splice(index, 1);
     this.setState({data: posts});
   },
   render: function() {
     return (
       <div className="postApp">
-      <PostList data={this.state.data} onPostDelete={this.handlePostDelete}/>
       <PostForm onPostSubmit={this.handlePostSubmit}/>
+      <PostList data={this.state.data} onPostDelete={this.handlePostDelete}/>
       </div>
     );
   }
