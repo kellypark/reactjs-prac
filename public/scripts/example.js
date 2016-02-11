@@ -50,6 +50,7 @@ var PostForm = React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
     this.props.onPostSubmit(this.state.title, this.state.note);
+    this.setState({title: '', note: ''});
   },
   render: function() {
     return (
