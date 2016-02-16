@@ -26,9 +26,13 @@ var Post = React.createClass({
       return (
         <div className="panel panel-default">
             <div className="panel-heading">
-              <input className="form-control" type="text" value={this.state.title} onChange={this.updateTitle}/>
-              <button className="btn btn-default" type="button" onClick={this.cancelEditPost}>Cancel</button>
-              <button className="btn btn-danger" type="button" onClick={this.updatePost}>Save</button>
+              <div className="row">
+                <div className="col-md-8">
+                  <input className="form-control" type="text" value={this.state.title} onChange={this.updateTitle}/>
+                </div>
+                <button className="btn btn-primary col-md-2" type="button" onClick={this.cancelEditPost}>Cancel</button>
+                <button className="btn btn-success col-md-2" type="button" onClick={this.updatePost}>Save</button>
+              </div>
             </div>
             <div className="panel-body">
               <textarea
@@ -36,7 +40,7 @@ var Post = React.createClass({
                 rows="3"
                 value={this.state.note}
                 onChange={this.updateNote}>
-              </textarea>
+                </textarea>
             </div>
         </div>
       );
@@ -45,9 +49,12 @@ var Post = React.createClass({
       return (
         <div className="panel panel-default">
             <div className="panel-heading">
-              {this.state.title}
-              <button className="btn btn-default" type="button" onClick={this.editPost}>Edit</button>
-              <button className="btn btn-danger" type="button" onClick={this.removeWithKey}>Delete</button>
+            <div className="row">
+              <div className="col-md-8">{this.state.title}</div>
+              <button className="btn btn-info col-md-2" type="button" onClick={this.editPost}>Edit</button>
+              <button className="btn btn-danger col-md-2" type="button" onClick={this.removeWithKey}>Delete</button>
+            </div>
+              
             </div>
             <div className="panel-body">
               {this.state.note}
