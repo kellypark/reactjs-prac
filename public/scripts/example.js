@@ -1,19 +1,60 @@
 var Post = React.createClass({
+  getInitialState: function(){
+    return {editMode: false, title: this.props.title, note: this.props.note};
+  },
   removeWithKey: function(){
     this.props.removePost(this.props.refKey);
   },
+  editPost: function(){
+    this.setState({editMode: true});
+  },
+  cancelEditPost: function() {
+    this.setState({editMode: false});
+  },
+  updateTitle: function(e) {
+    this.setState({title: e.target.value});
+  },
+  updateNote: function(e) {
+    this.setState({note: e.target.value});
+  },
+  updatePost: function(e) {
+    this.props.updatePost(this.props.refKey, this.state.title, this.state.note);
+    this.setState({editMode: false});
+  },
   render: function() {
-    return (
-      <div className="panel panel-default">
-          <div className="panel-heading">
-            {this.props.title}
-            <button className="btn btn-danger pull-right" type="button" onClick={this.removeWithKey}>Delete</button>
-          </div>
-          <div className="panel-body">
-            {this.props.note}
-          </div>
-      </div>
-    );
+    if (this.state.editMode) {
+      return (
+        <div className="panel panel-default">
+            <div className="panel-heading">
+              <input className="form-control" type="text" value={this.state.title} onChange={this.updateTitle}/>
+              <button className="btn btn-default" type="button" onClick={this.cancelEditPost}>Cancel</button>
+              <button className="btn btn-danger" type="button" onClick={this.updatePost}>Save</button>
+            </div>
+            <div className="panel-body">
+              <textarea
+                className="form-control"
+                rows="3"
+                value={this.state.note}
+                onChange={this.updateNote}>
+              </textarea>
+            </div>
+        </div>
+      );
+    }
+    else { 
+      return (
+        <div className="panel panel-default">
+            <div className="panel-heading">
+              {this.state.title}
+              <button className="btn btn-default" type="button" onClick={this.editPost}>Edit</button>
+              <button className="btn btn-danger" type="button" onClick={this.removeWithKey}>Delete</button>
+            </div>
+            <div className="panel-body">
+              {this.state.note}
+            </div>
+        </div>
+      );
+    }
   }
 });
 
@@ -21,11 +62,14 @@ var PostList = React.createClass({
   removePost: function(key){
     this.props.onPostDelete(key);
   },
+  updatePost: function(key, title, note){
+    this.props.onPostUpdate(key, title, note);
+  },
   render: function() {
     var posts = this.props.data.map((post) => {
       return (
         <div className="post-wrapper" key= {post.id}> 
-          <Post key={post.id} title={post.title} note={post.note} refKey={post.id} removePost={this.removePost}/> 
+          <Post key={post.id} title={post.title} note={post.note} refKey={post.id} removePost={this.removePost} updatePost={this.updatePost}/> 
         </div>
       );
     });
@@ -102,11 +146,19 @@ var PostApp = React.createClass({
     posts.splice(index, 1);
     this.setState({data: posts});
   },
+  handlePostUpdate: function(key, title, note){
+    var posts = this.state.data;
+    var foundPost = posts.find(post => {
+      return post.id === key;
+    });
+    foundPost.title = title;
+    foundPost.note = note;
+  },
   render: function() {
     return (
       <div className="post-app">
       <PostForm onPostSubmit={this.handlePostSubmit}/>
-      <PostList data={this.state.data} onPostDelete={this.handlePostDelete}/>
+      <PostList data={this.state.data} onPostDelete={this.handlePostDelete} onPostUpdate={this.handlePostUpdate}/>
       </div>
     );
   }
